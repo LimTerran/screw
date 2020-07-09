@@ -20,7 +20,7 @@
 
 
 
->  🚀 screw (螺丝钉) 英:[skruː]  ~ 简洁好用的数据库表结构文档生成工具
+>  🚀 screw (螺丝钉) 英:[`skruː`]  ~ 简洁好用的数据库表结构文档生成工具
 
 ## 简介
 
@@ -45,7 +45,6 @@
 - [x] SqlServer 
 - [x] PostgreSQL
 - [x] Cache DB
-- [ ] Phoenix HBase（开发中）
 - [ ] H2 （开发中）
 - [ ] DB2  （开发中）
 - [ ] HSQL  （开发中）
@@ -213,17 +212,22 @@ void documentGeneration() {
     </plugins>
 </build>
 ```
+### 使用文章
+
++ [SpringBoot整合screw生成数据库文档](https://my.oschina.net/mdxlcj/blog/4341399) 
 
 ## 更多支持
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td align="center"><img src="https://images.gitee.com/uploads/images/2020/0622/161414_eaa2819d_1407605.jpeg" width="200" height="200"  alt="WeChat"/> </td>
-    <td align="center"><img src="https://images.gitee.com/uploads/images/2020/0701/094259_a378b220_1407605.png" width="200" height="200"  alt="WeChat"/></td>
+    <td align="center"><img src="https://images.gitee.com/uploads/images/2020/0707/173905_c26c9414_1407605.png" width="200" height="200"  alt="WeChat"/></td>
+    <td align="center"><img src="https://images.gitee.com/uploads/images/2020/0707/191620_9a63fb23_1407605.png" width="200" height="200"  alt="QQ"/></td>
   </tr>
   <tr>
-    <td align="center">公众号</td>
-    <td align="center">交流群</td>
+    <td align="center">微信公众号</td>
+    <td align="center">微信交流群</td>
+    <td align="center">QQ交流群</td>
   </tr>
 </table>
 
@@ -236,7 +240,35 @@ void documentGeneration() {
  + 顺众数字科技（山东）有限公司
  + 江苏立华牧业股份有限公司
  + 上海德邦物流有限公司
+ + 兰州百格网络科技有限公司
  
+## 常见问题
+
+ + 生成后文档乱码
+
+   MySQL：URL加入`?characterEncoding=UTF-8`
+
+ + Caused by: java.lang.NoSuchFieldError: VERSION_2_3_30
+
+   检查项目`freemarker`依赖，这是由于版本过低造成的，升级版本为`2.3.30`即可
+
+ + java.lang.AbstractMethodError: oracle.jdbc.driver.T4CConnection.getSchema()Ljava/lang/String;
+
+   这是因为oracle驱动版本过低造成的，删除或屏蔽目前驱动版本，驱动添加升级为以下版本：
+
+``` xml
+<dependency>
+   <groupId>com.oracle.ojdbc</groupId>
+   <artifactId>ojdbc8</artifactId>
+   <version>19.3.0.0</version>
+</dependency>
+<dependency>
+   <groupId>cn.easyproject</groupId>
+   <artifactId>orai18n</artifactId>
+   <version>12.1.0.2.0</version>
+</dependency>
+```
+
 ## 参与贡献
 
 恳请的希望有兴趣的同学能够参与到**screw**建设中来，让我们共同完善它，让我们共同成长，帮助更多开发者，解决更多的问题。

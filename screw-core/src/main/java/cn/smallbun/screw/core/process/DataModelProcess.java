@@ -27,13 +27,10 @@ import cn.smallbun.screw.core.metadata.model.DataModel;
 import cn.smallbun.screw.core.metadata.model.TableModel;
 import cn.smallbun.screw.core.query.DatabaseQuery;
 import cn.smallbun.screw.core.query.DatabaseQueryFactory;
-import cn.smallbun.screw.core.util.BeanUtils;
-import cn.smallbun.screw.core.util.CollectionUtils;
 import cn.smallbun.screw.core.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static cn.smallbun.screw.core.constant.DefaultConstants.*;
@@ -129,18 +126,13 @@ public class DataModelProcess extends AbstractProcess {
             for (Column column : columnsCaching.get(table.getTableName())) {
                 packageColumn(columnModels, keyList, column);
             }
-            //去除空格
-            columnModels.forEach(BeanUtils::beanAttributeValueTrim);
             //放入列
             tableModel.setColumns(columnModels);
         }
-        //处理忽略表
-        List<TableModel> ignore = handleIgnore(tableModels);
-        //处理字段非空
-        ignore.forEach(BeanUtils::beanAttributeValueTrim);
-        model.setTables(ignore);
-        //去除model空格
-        BeanUtils.beanAttributeValueTrim(model);
+        //设置表
+        model.setTables(filterTables(tableModels));
+        //优化数据
+        optimizeData(model);
         /*封装数据结束*/
         logger.debug("encapsulation processing data time consuming:{}ms",
             (System.currentTimeMillis() - start));
@@ -179,40 +171,4 @@ public class DataModelProcess extends AbstractProcess {
         columnModels.add(columnModel);
     }
 
-    /**
-     * 处理忽略
-     *
-     * @param tables {@link List<TableModel>} 处理前数据
-     * @return {@link List<TableModel>} 处理过后的数据
-     */
-    private List<TableModel> handleIgnore(List<TableModel> tables) {
-        if (!Objects.isNull(config) && !Objects.isNull(config.getProduceConfig())) {
-            //处理忽略表名
-            if (CollectionUtils.isNotEmpty(config.getProduceConfig().getIgnoreTableName())) {
-                List<String> list = config.getProduceConfig().getIgnoreTableName();
-                for (String name : list) {
-                    tables = tables.stream().filter(j -> !j.getTableName().equals(name))
-                        .collect(Collectors.toList());
-                }
-            }
-            //忽略表名前缀
-            if (CollectionUtils.isNotEmpty(config.getProduceConfig().getIgnoreTablePrefix())) {
-                List<String> list = config.getProduceConfig().getIgnoreTablePrefix();
-                for (String prefix : list) {
-                    tables = tables.stream().filter(j -> !j.getTableName().startsWith(prefix))
-                        .collect(Collectors.toList());
-                }
-            }
-            //忽略表名后缀
-            if (CollectionUtils.isNotEmpty(config.getProduceConfig().getIgnoreTableSuffix())) {
-                List<String> list = config.getProduceConfig().getIgnoreTableSuffix();
-                for (String suffix : list) {
-                    tables = tables.stream().filter(j -> !j.getTableName().endsWith(suffix))
-                        .collect(Collectors.toList());
-                }
-            }
-            return tables;
-        }
-        return tables;
-    }
 }
